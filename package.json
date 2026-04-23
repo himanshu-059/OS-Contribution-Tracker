@@ -1,0 +1,22 @@
+{
+  "name": "os-contrib-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MERN stack app for tracking open source GitHub contributions.",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev": "node scripts/dev.js",
+    "server": "npm run dev --prefix backend",
+    "client": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "test": "npm test --prefix backend && npm run lint --prefix frontend"
+  },
+  "keywords": [
+    "mern",
+    "github",
+    "open-source",
+    "contributions"
+  ],
+  "author": "",
+  "license": "ISC"
+}
