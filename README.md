@@ -48,8 +48,8 @@ Required environment variables are listed in [backend/.env.example](backend/.env
 
 ```bash
 npm run dev
-npm run server
-npm run client
+npm run backend
+npm run frontend
 npm test
 ```
 
