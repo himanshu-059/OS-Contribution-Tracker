@@ -42,16 +42,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export const registerUser = async (payload) => {
-  const { data } = await api.post('/api/auth/register', payload);
-  return data;
-};
-
-export const loginUser = async (payload) => {
-  const { data } = await api.post('/api/auth/login', payload);
-  return data;
-};
-
 export const getCurrentUser = async () => {
   const { data } = await api.get('/api/auth/me');
   return data;

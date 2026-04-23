@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const isAuth = require('../middleware/isAuth');
-const { register, login, me } = require('../controllers/authController');
+const { me } = require('../controllers/authController');
 const router = express.Router();
 
 const createToken = (user) => jwt.sign(
@@ -11,15 +11,10 @@ const createToken = (user) => jwt.sign(
   { expiresIn: '7d' }
 );
 
-router.post('/register', register);
-router.post('/login', login);
-
-// Start GitHub OAuth
 router.get('/github', passport.authenticate('github', {
   scope: ['read:user', 'user:email', 'public_repo']
 }));
 
-// GitHub callback
 router.get('/github/callback', (req, res, next) => {
   passport.authenticate('github', (err, user) => {
     if (err || !user) {
@@ -39,10 +34,8 @@ router.get('/github/callback', (req, res, next) => {
   })(req, res, next);
 });
 
-// Get current logged-in user
 router.get('/me', isAuth, me);
 
-// Logout
 router.get('/logout', (req, res) => {
   req.logout((err) => {
     if (err) {

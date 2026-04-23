@@ -1,23 +1,19 @@
 # OS Contrib Tracker
 
-The Open Source Contribution Tracker is a web-based MERN stack platform that helps developers monitor and analyze their open-source contributions across GitHub repositories.
-
-Users can register and login with JWT authentication, then create, read, update, and delete manually tracked contributions. They can also connect GitHub with OAuth to fetch repositories, commits, pull requests, and contribution statistics.
+OS Contrib Tracker is a small MERN dashboard for following open-source activity from GitHub. Sign in with GitHub, review repositories, pull requests, commits, and keep a manual list of contributions you want to track.
 
 ## Tech Stack
 
 - MongoDB with Mongoose
 - Express and Node.js API
-- React client built with Vite
-- JWT authentication with bcrypt password hashing
-- GitHub OAuth with Passport
-- React Router DOM for Login, Register, and Dashboard pages
+- React frontend built with Vite
+- GitHub OAuth through Passport
+- JWT-backed API requests
+- React Router DOM for the auth and dashboard pages
 
 ## Features
 
-- GitHub authentication and session-based login
-- JWT registration and login
-- Password hashing with bcrypt
+- GitHub sign-in
 - Repository overview with stars and direct GitHub links
 - Pull request history authored by the connected user
 - Repository-specific commit explorer
@@ -25,7 +21,6 @@ Users can register and login with JWT authentication, then create, read, update,
 - Current contribution streak metric
 - Full CRUD for manually tracked contributions
 - Dashboard actions for analyzing activity and tracking contributions
-- Summary dashboard for contribution activity
 
 ## Setup
 
@@ -58,7 +53,7 @@ npm run client
 npm test
 ```
 
-The React client runs on `http://localhost:3000` and proxies API requests to the Express server on `http://localhost:5050`.
+The React frontend runs on `http://localhost:3000` and proxies API requests to the Express API on `http://localhost:5050`.
 
 You can also run the backend only:
 
@@ -72,8 +67,6 @@ npm start
 
 - `GET /health` checks that the API is running.
 - `GET /api/auth/github` starts GitHub OAuth login.
-- `POST /api/auth/register` creates a user with a hashed password and returns a JWT.
-- `POST /api/auth/login` verifies credentials and returns a JWT.
 - `GET /api/auth/me` returns the logged-in user.
 - `GET /api/auth/logout` logs out the current user.
 - `GET /api/contributions` reads tracked contributions.
