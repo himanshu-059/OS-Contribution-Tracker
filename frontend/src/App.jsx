@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import {
   CalendarDays,
   ExternalLink,
@@ -23,9 +23,7 @@ import {
   getRepos,
   getStats,
   getTrackedContributions,
-  loginUser,
   logout,
-  registerUser,
   setStoredToken,
   updateTrackedContribution
 } from './api';
@@ -119,16 +117,13 @@ function ContributionGraph({ graph }) {
   );
 }
 
-function AuthPage({ mode }) {
-  const isRegister = mode === 'register';
-  const [form, setForm] = useState({ username: '', email: '', password: '' });
-  const [message, setMessage] = useState(() => {
+function AuthPage() {
+  const [message] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     return params.get('error') === 'github_auth_failed'
       ? 'GitHub authentication failed. Please check your OAuth app callback URL and try again.'
       : '';
   });
-  const [showAccountChoice, setShowAccountChoice] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -138,102 +133,31 @@ function AuthPage({ mode }) {
     }
   }, []);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setMessage('');
-
-    try {
-      const data = isRegister ? await registerUser(form) : await loginUser(form);
-      if (setStoredToken(data.token)) {
-        window.location.href = '/dashboard';
-      } else {
-        setMessage('Safari is blocking browser storage. Please allow site storage or turn off private browsing, then try again.');
-      }
-    } catch (err) {
-      setMessage(err.response?.data?.message || 'Authentication failed');
-    }
-  };
-
   return (
     <main className="landing-shell">
       <section className="hero auth-hero">
         <div className="hero-copy">
-          <span className="eyebrow">MERN JWT Dashboard</span>
-          <h1>{isRegister ? 'Create your tracker account.' : 'Login to your tracker.'}</h1>
+          <span className="eyebrow">Open Source Tracker</span>
+          <h1>Welcome back.</h1>
           <p>
-            Use JWT authentication for the project requirement, then optionally connect GitHub
-            to analyze live open-source activity.
+            Track repositories, commits, pull requests, and contribution notes from one clean
+            dashboard.
           </p>
         </div>
 
-        <form className="auth-card" onSubmit={handleSubmit}>
-          <h2>{isRegister ? 'Register' : 'Login'}</h2>
-          {isRegister && (
-            <label>
-              Username
-              <input
-                value={form.username}
-                onChange={(event) => setForm({ ...form, username: event.target.value })}
-                placeholder="bhanu"
-              />
-            </label>
-          )}
-          <label>
-            Email
-            <input
-              type="email"
-              value={form.email}
-              onChange={(event) => setForm({ ...form, email: event.target.value })}
-              placeholder="you@example.com"
-            />
-          </label>
-          <label>
-            Password
-            <input
-              type="password"
-              value={form.password}
-              onChange={(event) => setForm({ ...form, password: event.target.value })}
-              placeholder="Minimum 6 characters"
-            />
-          </label>
-
+        <section className="auth-card oauth-card">
+          <h2>Continue with GitHub</h2>
+          <p className="oauth-note">
+            Sign in with your GitHub account to load your repositories, pull requests, commits,
+            and contribution stats.
+          </p>
           {message && <p className="empty-state error">{message}</p>}
 
-          <button className="primary-action" type="submit">
-            {isRegister ? 'Create Account' : 'Login'}
-          </button>
-
-          <p className="auth-switch">
-            {isRegister ? 'Already have an account?' : 'Need an account?'}{' '}
-            <Link to={isRegister ? '/login' : '/register'}>{isRegister ? 'Login' : 'Register'}</Link>
-          </p>
-
-          <button className="ghost-button" type="button" onClick={() => setShowAccountChoice(true)}>
+          <a className="primary-action oauth-action" href={loginUrl}>
             <Github size={18} />
             Continue with GitHub
-          </button>
-
-          {showAccountChoice && (
-            <div className="account-choice-card compact-card">
-              <strong>Which GitHub account?</strong>
-              <p>GitHub uses your active browser session. Sign out first to choose another GitHub account.</p>
-              <div className="account-choice-actions">
-                <a className="primary-action compact" href={loginUrl}>
-                  Use current GitHub account
-                </a>
-                <button
-                  className="ghost-button compact"
-                  type="button"
-                  onClick={() => {
-                    window.location.href = 'https://github.com/logout';
-                  }}
-                >
-                  Choose another account
-                </button>
-              </div>
-            </div>
-          )}
-        </form>
+          </a>
+        </section>
       </section>
     </main>
   );
@@ -648,8 +572,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to={user ? '/dashboard' : '/login'} replace />} />
-      <Route path="/login" element={<AuthPage mode="login" />} />
-      <Route path="/register" element={<AuthPage mode="register" />} />
+      <Route path="/login" element={<AuthPage />} />
+      <Route path="/register" element={<Navigate to="/login" replace />} />
       <Route
         path="/dashboard"
         element={
