@@ -124,6 +124,7 @@ function AuthPage() {
       ? 'GitHub authentication failed. Please check your OAuth app callback URL and try again.'
       : '';
   });
+  const [showAccountChoice, setShowAccountChoice] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -153,10 +154,28 @@ function AuthPage() {
           </p>
           {message && <p className="empty-state error">{message}</p>}
 
-          <a className="primary-action oauth-action" href={loginUrl}>
+          <button className="primary-action oauth-action" type="button" onClick={() => setShowAccountChoice(true)}>
             <Github size={18} />
             Continue with GitHub
-          </a>
+          </button>
+
+          {showAccountChoice && (
+            <div className="account-choice-card compact-card">
+              <strong>Choose GitHub account</strong>
+              <p>
+                GitHub uses the account already signed in on Safari. Sign out first if you want
+                to pick a different account.
+              </p>
+              <div className="account-choice-actions">
+                <a className="primary-action compact" href={loginUrl}>
+                  Use current GitHub account
+                </a>
+                <a className="ghost-button compact" href="https://github.com/logout">
+                  Choose another account
+                </a>
+              </div>
+            </div>
+          )}
         </section>
       </section>
     </main>
